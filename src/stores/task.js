@@ -1,5 +1,6 @@
+// stores/task.js
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import api from '@/plugins/axios'
 
 export const useTaskStore = defineStore('task', {
   state: () => ({
@@ -7,27 +8,45 @@ export const useTaskStore = defineStore('task', {
     loading: false
   }),
   actions: {
-    async fetchTasks() {
+async fetchTasks() {
+  this.loading = true
+  try {
+    const response = await api.get('/tasks')
+    console.log('Fetched tasks:', response.data)
+    this.tasks = response.data.tasks || response.data.data || response.data
+  } finally {
+    this.loading = false
+  }
+},
+async addTask(task) {
+  this.loading = true;
+  try {
+    await api.post('/tasks', task);
+    await this.fetchTasks(); 
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout:', error);
+  } finally {
+    this.loading = false;
+  }
+},
+    async updateTask(id, task) {
       this.loading = true
       try {
-        const response = await axios.get('/api/tasks')
-        this.tasks = response.data.tasks
+        const response = await api.put(`/tasks/${id}`, task)
+        const index = this.tasks.findIndex(t => t.id === id)
+        if (index !== -1) this.tasks[index] = response.data
       } finally {
         this.loading = false
       }
     },
-    async addTask(taskData) {
-      const response = await axios.post('/api/tasks', taskData)
-      this.tasks.push(response.data)
-    },
-    async updateTask(id, updates) {
-      const response = await axios.put(`/api/tasks/${id}`, updates)
-      const index = this.tasks.findIndex(t => t.id === id)
-      this.tasks.splice(index, 1, response.data)
-    },
     async deleteTask(id) {
-      await axios.delete(`/api/tasks/${id}`)
-      this.tasks = this.tasks.filter(t => t.id !== id)
+      this.loading = true
+      try {
+        await api.delete(`/tasks/${id}`)
+        this.tasks = this.tasks.filter(t => t.id !== id)
+      } finally {
+        this.loading = false
+      }
     }
   }
 })

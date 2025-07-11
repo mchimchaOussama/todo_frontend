@@ -43,3 +43,4 @@ window.Echo = new Echo({
 })
 
 app.mount('#app')
+

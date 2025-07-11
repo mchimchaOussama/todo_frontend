@@ -1,5 +1,6 @@
+
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import api from '@/plugins/axios'
 import router from '@/router'
 
 export const useAuthStore = defineStore('auth', {
@@ -9,22 +10,27 @@ export const useAuthStore = defineStore('auth', {
   }),
   actions: {
     async register(userData) {
-      const response = await axios.post('/api/auth/register', userData)
+      const response = await api.post('/auth/register', userData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       this.token = response.data.token
       localStorage.setItem('token', this.token)
     },
     async login(credentials) {
-      const response = await axios.post('/api/auth/login', credentials)
+      const response = await api.post('/auth/login', credentials)
       this.token = response.data.token
+       this.user = response.data.user 
       localStorage.setItem('token', this.token)
-      await this.fetchUser()
-    },
+},
     async fetchUser() {
-      const response = await axios.get('/api/auth/me')
+      const response = await api.get('/auth/me')
       this.user = response.data
     },
+    
     logout() {
-      axios.post('/api/auth/logout')
+      api.post('/auth/logout')
       this.user = null
       this.token = null
       localStorage.removeItem('token')

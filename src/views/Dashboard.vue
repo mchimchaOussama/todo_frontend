@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="task-actions">
-          <button @click="editTask(task)">✏️</button>
+        <!--   <button @click="editTask(task)">✏️</button> -->
           <button @click="deleteTask(task.id)">🗑️</button>
         </div>
       </li>

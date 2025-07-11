@@ -28,7 +28,7 @@ const handleLogin = async () => {
     })
     router.push('/')
   } catch (error) {
-    alert('Identifiants incorrects')
+    // alert('Identifiants incorrects')
   }
 }
 </script>
