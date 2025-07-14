@@ -24,9 +24,15 @@ export const useAuthStore = defineStore('auth', {
        this.user = response.data.user 
       localStorage.setItem('token', this.token)
 },
-    async fetchUser() {
-      const response = await api.get('/auth/me')
-      this.user = response.data
+async fetchUser() {
+  const response = await api.get('/auth/me')
+  console.log('fetchUser response:', response.data)
+  this.user = response.data
+},
+      async initialize() {
+      if (this.token && !this.user) {
+        await this.fetchUser()
+      }
     },
     
     logout() {

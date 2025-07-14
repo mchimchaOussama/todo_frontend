@@ -2,20 +2,21 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import Dashboard from '@/views/Dashboard.vue'
-import TaskList from '@/components/TaskList.vue'
+import TaskListPage from '@/views/TaskListPage.vue'
+
+
 import { useAuthStore } from '@/stores/auth'
 
 const routes = [
   {
     path: '/',
     component: Dashboard,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/tasks',
+    component: TaskListPage,
     meta: { requiresAuth: true },
-    children: [
-      {
-        path: '',
-        component: TaskList
-      }
-    ]
   },
   {
     path: '/login',

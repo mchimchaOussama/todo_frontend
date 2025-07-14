@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
+import "./style.css" 
 
 const app = createApp(App)
 
@@ -27,11 +28,6 @@ window.Echo = new Echo({
   key: import.meta.env.VITE_PUSHER_APP_KEY,
   cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
   forceTLS: true,
-  wsHost: 'ws-mt1.pusher.com',
-  wsPort: 443,
-  wssPort: 443,
-  disableStats: true,
-  enabledTransports: ['ws', 'wss'],
   authEndpoint: import.meta.env.VITE_API_URL + '/broadcasting/auth',
   auth: {
     headers: {
@@ -40,7 +36,8 @@ window.Echo = new Echo({
       'Content-Type': 'application/json'
     }
   }
-})
+});
+
 
 app.mount('#app')
 

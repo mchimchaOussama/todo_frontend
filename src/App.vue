@@ -5,19 +5,24 @@ import { useAuthStore } from '@/stores/auth'
 const authStore = useAuthStore()
 
 onMounted(() => {
-window.Echo.channel('tasks')
-.listen('.task.created', (e) => {
-console.log('Broadcast received:', e.message)
-alert('Received message: ' + e.message)
-})
-})
+  const userId = authStore.user?.id;
+
+  if (!userId) {
+    console.error("Missing user ID");
+    return;
+  }
+
+  Echo.private(`App.Models.User.${userId}`)
+    .listen('.task.created', (e) => {
+      console.log('Task created event received:', e);
+      alert(`Nouvelle tâche : ${e.task.title}`);
+    });
+});
+
 </script>
 
 <template>
   <div id="app">
-    <header>
-      <h1>  {{ authStore.user?.full_name || 'invité' }} To-Do List</h1>
-    </header>
     <main>
       <router-view />
     </main>
